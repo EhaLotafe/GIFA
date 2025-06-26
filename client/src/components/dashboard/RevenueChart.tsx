@@ -108,9 +108,9 @@ export default function RevenueChart() {
     <Card className="gifa-card">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Évolution des revenus</CardTitle>
-        <select className="text-sm border border-border rounded-lg px-3 py-1 bg-background">
-          <option>6 derniers mois</option>
-          <option>12 derniers mois</option>
+        <select className="text-sm border border-border rounded-lg px-3 py-1 bg-background" aria-label="Période d'affichage des revenus">
+           <option>6 derniers mois</option>
+           <option>12 derniers mois</option>
         </select>
       </CardHeader>
       <CardContent>

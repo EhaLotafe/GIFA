@@ -149,8 +149,8 @@ export const transactionsAPI = {
 // AI Assistant API
 export const aiAPI = {
   getAdvice: (question: string, includeFinancialData: boolean = true): Promise<AIAdviceResponse> => 
-    apiRequest("POST", "/api/ai/advice", { question, includeFinancialData }),
+    apiRequest("POST", "/api/ai/advice", { question, includeFinancialData }).then(res => res.json()),
   
   analyzeTrends: (): Promise<AITrendsResponse> => 
-    apiRequest("POST", "/api/ai/analyze-trends", {}),
+    apiRequest("POST", "/api/ai/analyze-trends", {}).then(res => res.json()),
 };

@@ -46,10 +46,7 @@ export default function MobileNav({ isOpen, onClose, currentSection, onSectionCh
               </div>
               <h2 className="text-xl font-semibold text-gray-800 dark:text-white">GIFA</h2>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
+            <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Fermer le menu">
               <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
             </button>
           </div>

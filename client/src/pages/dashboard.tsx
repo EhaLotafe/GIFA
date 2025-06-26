@@ -16,16 +16,22 @@ export default function Dashboard() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
-  const handleSectionChange = (section: Section) => {
-    setCurrentSection(section);
-    setIsMobileNavOpen(false);
+  const handleSectionChange = (section: string) => {
+    // Vérifiez que la section est une valeur valide de Section
+    const validSections: Section[] = ["dashboard", "invoices", "expenses", "inventory", "reports", "payments", "ai-assistant"];
+    if (validSections.includes(section as Section)) {
+      setCurrentSection(section as Section);
+      setIsMobileNavOpen(false);
+    } else {
+      console.error(`Invalid section: ${section}`);
+    }
   };
 
   const getSectionTitle = (section: Section): string => {
     const titles = {
       dashboard: "Tableau de bord",
       invoices: "Facturation",
-      expenses: "Suivi des dépenses", 
+      expenses: "Suivi des dépenses",
       inventory: "Gestion Stock/Services",
       reports: "Rapports et Analyses",
       payments: "Paiements",
@@ -37,7 +43,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background">
       {/* Mobile Navigation */}
-      <MobileNav 
+      <MobileNav
         isOpen={isMobileNavOpen}
         onClose={() => setIsMobileNavOpen(false)}
         currentSection={currentSection}
@@ -46,7 +52,7 @@ export default function Dashboard() {
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <Sidebar 
+        <Sidebar
           currentSection={currentSection}
           onSectionChange={handleSectionChange}
         />
@@ -54,7 +60,7 @@ export default function Dashboard() {
         {/* Main Content */}
         <main className="flex-1 lg:ml-64">
           {/* Top Bar */}
-          <TopBar 
+          <TopBar
             title={getSectionTitle(currentSection)}
             onMenuClick={() => setIsMobileNavOpen(true)}
             onNewInvoice={() => setIsInvoiceModalOpen(true)}
@@ -93,10 +99,12 @@ export default function Dashboard() {
       </div>
 
       {/* Modals */}
-      <InvoiceModal 
+      <InvoiceModal
         isOpen={isInvoiceModalOpen}
         onClose={() => setIsInvoiceModalOpen(false)}
       />
     </div>
   );
 }
+// Note: Ensure that the components used in this file (Sidebar, MobileNav, TopBar, etc.) are correctly implemented and imported.
+// This code provides a basic structure for a dashboard page with navigation and section handling.  

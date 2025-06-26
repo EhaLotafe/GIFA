@@ -1,4 +1,4 @@
-import { 
+import {
   users, invoices, expenses, inventory, transactions, paymentLinks,
   type User, type InsertUser,
   type Invoice, type InsertInvoice,
@@ -104,11 +104,16 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId++;
-    const user: User = { 
-      ...insertUser, 
-      id, 
-      createdAt: new Date() 
+    const user: User = {
+      id,
+      createdAt: new Date(),
+      username: insertUser.username,
+      password: insertUser.password,
+      businessName: insertUser.businessName ?? null,
+      email: insertUser.email ?? null,
+      phone: insertUser.phone ?? null,
     };
+
     this.users.set(id, user);
     return user;
   }
@@ -132,10 +137,14 @@ export class MemStorage implements IStorage {
       invoiceNumber,
       createdAt: new Date(),
       paidDate: null,
+      status: insertInvoice.status ?? 'pending',
+      clientEmail: insertInvoice.clientEmail ?? null,
+      clientPhone: insertInvoice.clientPhone ?? null,
+      description: insertInvoice.description ?? null,
+      dueDate: insertInvoice.dueDate ?? null,
     };
     this.invoices.set(id, invoice);
 
-    // Create corresponding transaction
     await this.createTransaction({
       userId: insertInvoice.userId,
       type: "income",
@@ -182,17 +191,18 @@ export class MemStorage implements IStorage {
       ...insertExpense,
       id,
       createdAt: new Date(),
+      paymentMethod: insertExpense.paymentMethod ?? null,
+      receiptUrl: insertExpense.receiptUrl ?? null,
     };
     this.expenses.set(id, expense);
 
-    // Create corresponding transaction
     await this.createTransaction({
       userId: insertExpense.userId,
       type: "expense",
       category: insertExpense.category,
       description: insertExpense.description,
       amount: insertExpense.amount,
-      paymentMethod: insertExpense.paymentMethod,
+      paymentMethod: insertExpense.paymentMethod ?? null,
       relatedInvoiceId: null,
       relatedExpenseId: id,
     });
@@ -232,6 +242,11 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
       updatedAt: new Date(),
+      description: insertItem.description ?? null,
+      quantity: insertItem.quantity ?? 0,
+      minStockLevel: insertItem.minStockLevel ?? null,
+      costPrice: insertItem.costPrice ?? null,
+      imageUrl: insertItem.imageUrl ?? null,
     };
     this.inventory.set(id, item);
     return item;
@@ -271,6 +286,9 @@ export class MemStorage implements IStorage {
       ...insertTransaction,
       id,
       createdAt: new Date(),
+      paymentMethod: insertTransaction.paymentMethod ?? null,
+      relatedInvoiceId: insertTransaction.relatedInvoiceId ?? null,
+      relatedExpenseId: insertTransaction.relatedExpenseId ?? null,
     };
     this.transactions.set(id, transaction);
     return transaction;
@@ -278,7 +296,7 @@ export class MemStorage implements IStorage {
 
   async getTransactionsByDateRange(userId: number, startDate: Date, endDate: Date): Promise<Transaction[]> {
     return Array.from(this.transactions.values()).filter(
-      transaction => 
+      transaction =>
         transaction.userId === userId &&
         transaction.createdAt! >= startDate &&
         transaction.createdAt! <= endDate
@@ -301,6 +319,8 @@ export class MemStorage implements IStorage {
       id: this.currentId++,
       linkId,
       createdAt: new Date(),
+      status: insertPaymentLink.status ?? 'pending',
+      expiresAt: insertPaymentLink.expiresAt ?? null,
     };
     this.paymentLinks.set(linkId, paymentLink);
     return paymentLink;
@@ -327,7 +347,6 @@ export class MemStorage implements IStorage {
     const targetMonth = month ?? now.getMonth();
     const targetYear = year ?? now.getFullYear();
 
-    // Filter transactions for the specified month/year
     const monthTransactions = Array.from(this.transactions.values()).filter(t => {
       if (t.userId !== userId || !t.createdAt) return false;
       const date = t.createdAt;
