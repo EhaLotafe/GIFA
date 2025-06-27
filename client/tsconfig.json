@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@shared/*": ["../shared/*"]
+    }
+  },
+  "include": ["src"]
+}
+// This configuration extends the base tsconfig.json and sets up paths for the client application.
+// It includes the source files in the "src" directory and sets up path aliases for easier imports. 
